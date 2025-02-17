@@ -280,7 +280,7 @@ public class MenuDialogs : IMenuDialogs
         Console.ReadLine();
     }
 
-    private void EditProject()
+    private void EditProject() // Added this method to edit projects
     {
         Console.Clear();
         Console.Write("Enter Project ID to edit: ");
