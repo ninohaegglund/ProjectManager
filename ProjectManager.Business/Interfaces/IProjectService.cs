@@ -1,13 +1,15 @@
-﻿using ProjectManager.Data.Entities;
+﻿using ProjectManager.Business.Dtos;
+using ProjectManager.Business.Models;
+using ProjectManager.Data.Entities;
+using System.Linq.Expressions;
 
-namespace ProjectManager.Business.Interfaces
+namespace ProjectManager.Business.Interfaces;
+
+public interface IProjectService
 {
-    public interface IProjectService
-    {
-        ProjectEntity CreateProject(ProjectEntity projectEntity);
-        ProjectEntity GetProjectById(long id);
-        IEnumerable<ProjectEntity> GetProjects();
-        IEnumerable<ProjectEntity> GetProjectsByCustomerId(int customerId);
-        ProjectEntity UpdateProject(ProjectEntity projectEntity);
-    }
+    Task<Project> CreateProjectAsync(ProjectDto dto);
+    Task<bool> DeleteProjectAsync(Project project);
+    Task<IEnumerable<Project>> GetAllProjectAsync();
+    Task<Project> GetProjectAsync(int id);
+    Task<bool> UpdateProjectAsync(ProjectUpdateDto dto);
 }

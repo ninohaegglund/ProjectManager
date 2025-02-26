@@ -1,37 +1,113 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectManager.Data.Contexts;
 using ProjectManager.Data.Interfaces;
+using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace ProjectManager.Business.Repositories;
 
-public class BaseRepository<T>(DataContext context) : IBaseRepository<T> where T : class
+public abstract class BaseRepository<T>(DataContext context) : IBaseRepository<T> where T : class
 {
     protected readonly DataContext _context = context;
     private readonly DbSet<T> _dbSet = context.Set<T>();
 
-    public IEnumerable<T> GetAll() => _dbSet.ToList();
-
-    public T? GetById(long id) => _dbSet.Find(id);
-
-    public void Add(T entity)
+    public virtual async Task<T?> AddAsync(T entity)
     {
-        _dbSet.Add(entity);
-        _context.SaveChanges();
-    }
-
-    public void Update(T entity)
-    {
-        _dbSet.Update(entity);
-        _context.SaveChanges();
-    }
-
-    public void Delete(long id)
-    {
-        var entity = GetById(id);
-        if (entity != null)
+        try
         {
-            _dbSet.Remove(entity);
-            _context.SaveChanges();
+            ArgumentNullException.ThrowIfNull(entity);
+
+            _dbSet.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
         }
     }
+
+
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
+    {
+        try
+        {
+            var entities = await _dbSet.ToListAsync();
+            return entities;
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return [];
+        }
+    }
+
+    public virtual async Task<T?> GetAsync(Expression<Func<T, bool>> expression)
+    {
+        try
+        {
+            var entity = await _dbSet.FirstOrDefaultAsync(expression);
+            return entity;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
+    public virtual async Task<bool> ExistsAsync(Expression<Func<T, bool>> expression)
+    {
+        try
+        {
+            var result = await _dbSet.AnyAsync(expression);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+
+    public virtual async Task<bool> UpdateAsync(T entity)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(entity);
+
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+    public virtual async Task<bool> DeleteAsync(T entity)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(entity);
+
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+
+
+
 }

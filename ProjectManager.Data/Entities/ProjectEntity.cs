@@ -1,20 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿
 
-namespace ProjectManager.Data.Entities
+using System.ComponentModel.DataAnnotations;
+
+namespace ProjectManager.Data.Entities;
+
+public class ProjectEntity
 {
-    public class ProjectEntity
-    {
-        [Key]
-        public long Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string? Description { get; set; }
-        public DateTime StartDate { get; set; } = DateTime.Now;
-        public DateTime? EndDate { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
+    public string? Description { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.Now; 
+    public DateTime? EndDate { get; set; } = null!;
 
-        [Required] 
-        [ForeignKey("Customer")] 
-        public long CustomerId { get; set; }
-        public UserEntity Customer { get; set; } = null!;
-    }
+    public int CustomerId { get; set; }
+    public CustomerEntity Customer { get; set; } = null!;
+    public int ProjectCategoryId { get; set; }
+    public ProjectCategoryEntity ProjectCategory { get; set; } = null!;
+    public int StatusId { get; set; }
+    public StatusEntity Status { get; set; } = null!;
+    public int ProjectTaskId { get; set; }
+    public ProjectTaskEntity ProjectTask { get; set; } = null!;
+
 }

@@ -1,11 +1,13 @@
-﻿namespace ProjectManager.Data.Interfaces
+﻿using System.Linq.Expressions;
+
+namespace ProjectManager.Data.Interfaces;
+
+public interface IBaseRepository<T> where T : class
 {
-    public interface IBaseRepository<T> where T : class
-    {
-        void Add(T entity);
-        void Delete(long id);
-        IEnumerable<T> GetAll();
-        T? GetById(long id);
-        void Update(T entity);
-    }
+    Task<T?> AddAsync(T entity);
+    Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);
+    Task<IEnumerable<T>> GetAllAsync();
+    Task<T?> GetAsync(Expression<Func<T, bool>> expression);
+    Task<bool> DeleteAsync(T entity);
+    Task<bool> UpdateAsync(T entity);
 }

@@ -10,8 +10,4 @@
     <ProjectReference Include="..\ProjectManager.Data\ProjectManager.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
 </Project>

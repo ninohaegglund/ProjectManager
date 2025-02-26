@@ -1,44 +1,103 @@
-﻿using ProjectManager.Business.Interfaces;
+﻿
+using ProjectManager.Business.Dtos;
+using ProjectManager.Business.Factories;
+using ProjectManager.Business.Interfaces;
+using ProjectManager.Business.Models;
 using ProjectManager.Data.Entities;
 using ProjectManager.Data.Interfaces;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 
-namespace ProjectManager.Business.Services
+namespace ProjectManager.Business.Services;
+
+public class ProjectService(IProjectRepository projectRepository) : IProjectService
 {
-    public class ProjectService : IProjectService
+    private readonly IProjectRepository _projectRepository = projectRepository;
+
+    public async Task<Project> CreateProjectAsync(ProjectDto dto)
     {
-        private readonly IProjectRepository _projectRepository;
-
-        // Dependency injection
-        public ProjectService(IProjectRepository projectRepository)
+        try
         {
-            _projectRepository = projectRepository;
+            ArgumentNullException.ThrowIfNull(dto);
+
+            var entity = ProjectFactory.Create(dto);
+
+            if (entity == null)
+                return null!;
+   
+            entity = await _projectRepository.AddAsync(entity);
+
+
+            if (entity == null)
+                return null!;
+
+            var project = ProjectFactory.Create(entity);
+            return project!;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return null!;
+        }
+    }
+
+    public async Task<IEnumerable<Project?>> GetAllProjectAsync()
+    {
+        var entities = await _projectRepository.GetAllAsync();
+        var projects = entities.Select(ProjectFactory.Create);
+        return projects;
+    }
+
+    public async Task<Project?> GetProjectAsync(int id)
+    {
+        var entities = await _projectRepository.GetAsync( x => x.Id == id);
+        if (entities == null) 
+            return null!;
+        var projects = ProjectFactory.Create(entities);
+        return projects;
+    }
+
+    public async Task<bool> UpdateProjectAsync(ProjectUpdateDto dto)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(dto);
+
+            var entity = ProjectFactory.Create(dto);
+
+            if (entity == null)
+                return false;
+
+            var result = await _projectRepository.UpdateAsync(entity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return false;
         }
 
-        public ProjectEntity CreateProject(ProjectEntity projectEntity)
-        {
-            _projectRepository.Add(projectEntity);
-            return projectEntity;
-        }
+    }
 
-        public IEnumerable<ProjectEntity> GetProjects()
+    public async Task<bool> DeleteProjectAsync(Project project)
+    {
+        try
         {
-            return _projectRepository.GetAll();
-        }
+            ArgumentNullException.ThrowIfNull(project);
 
-        public ProjectEntity GetProjectById(long id)
-        {
-            return _projectRepository.GetById(id);
-        }
+            var entity = await _projectRepository.GetAsync(x => x.Id == project.Id);
 
-        public IEnumerable<ProjectEntity> GetProjectsByCustomerId(int customerId)
-        {
-            return _projectRepository.GetProjectsByCustomerId(customerId);
+            if (entity == null) 
+                return false;
+            
+            var result = await _projectRepository.DeleteAsync(entity);
+            return result;
         }
-
-        public ProjectEntity UpdateProject(ProjectEntity projectEntity)
+        catch (Exception ex)
         {
-            _projectRepository.Update(projectEntity);
-            return projectEntity;
+            Debug.WriteLine(ex.Message);
+            return false;
         }
     }
 }
