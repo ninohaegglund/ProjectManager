@@ -8,12 +8,32 @@ public static class CustomerFactory
 {
     public static CustomerDto Create() => new();
 
-    public static Customer? Create(CustomerEntity entity) => entity == null ? null : new Customer
+    public static Customer? Create(CustomerEntity entity)
     {
-        Id = entity.Id,
-        CustomerName = entity.CustomerName,
-        Email = entity.Email
-    };
+        var customer = new Customer()
+        {
+            Id = entity.Id,
+            CustomerName = entity.CustomerName,
+            Email = entity.Email,
+            Projects = []
+        };
+
+        if (entity.Projects != null)
+        {
+            var projects = new List<Project>();
+            foreach (var project in entity.Projects)
+                projects.Add(new Project
+                {
+                    Id = project.Id,
+                    Description = project.Description,
+                });
+            
+             customer.Projects = projects;
+        }
+
+        return customer;
+    }
+
     public static CustomerEntity Create(CustomerDto dto) => new()
     {
         CustomerName = dto.CustomerName,

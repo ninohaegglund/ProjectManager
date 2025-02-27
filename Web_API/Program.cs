@@ -31,4 +31,4 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
-//1:44:00 går igenom web_api
+//2:20:00 går igenom frontend med js och html. (Lektion 4 - Repository Patterns)
