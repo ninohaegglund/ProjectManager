@@ -7,7 +7,7 @@ namespace ProjectManager.Business.Interfaces;
 
 public interface IProjectService
 {
-    Task<Project> CreateProjectAsync(ProjectDto dto);
+    Task<bool> CreateProjectAsync(ProjectDto dto);
     Task<bool> DeleteProjectAsync(Project project);
     Task<IEnumerable<Project>> GetAllProjectAsync();
     Task<Project> GetProjectAsync(int id);

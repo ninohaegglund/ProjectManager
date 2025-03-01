@@ -10,7 +10,7 @@ public class Project
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
     public DateTime StartDate { get; set; } = DateTime.Now;
-    public DateTime? EndDate { get; set; } = null!;
+    public DateTime? EndDate { get; set; }
 
     public Customer Customer { get; set; } = null!;
     public ProjectCategory ProjectCategory { get; set; } = null!;

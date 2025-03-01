@@ -13,14 +13,15 @@ public class ProjectController(IProjectService projectService) : ControllerBase
     private readonly IProjectService _projectService = projectService;
 
     [HttpPost]
-    public async Task<IActionResult> CreateProject(ProjectDto dto)
+    public async Task<IActionResult> CreateProject([FromBody] ProjectDto dto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        if (!ModelState.IsValid && dto.CustomerId < 1)
+            return BadRequest();
 
-        var project = await _projectService.CreateProjectAsync(dto);
-        return project == null ? BadRequest() : Ok(project);
+        var result = await _projectService.CreateProjectAsync(dto);
+        return result ? Created("", null) : Problem();
     }
+
 
     [HttpGet]
     public async Task<IActionResult> GetAllProject()

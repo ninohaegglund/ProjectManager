@@ -7,11 +7,14 @@ public static class StatusFactory
 {
     public static Status? Create(StatusEntity entity)
     {
+        if (entity == null)
+            throw new ArgumentNullException(nameof(entity));
+
         var status = new Status()
         {
             Id = entity.Id,
             StatusName = entity.StatusName,
-            Projects = []
+            Projects = new List<Project>()
         };
 
         if (entity.Projects != null)

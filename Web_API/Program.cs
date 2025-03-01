@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectManager.Business.Interfaces;
-using ProjectManager.Business.Repositories;
 using ProjectManager.Business.Services;
 using ProjectManager.Data.Contexts;
 using ProjectManager.Data.Interfaces;
@@ -25,10 +24,9 @@ builder.Services.AddScoped<IProjectCategoryRepository, ProjectCategoryRepository
 builder.Services.AddScoped<IProjectTaskRepository, ProjectTaskRepository>();
 
 var app = builder.Build();
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.MapOpenApi();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
-//2:20:00 går igenom frontend med js och html. (Lektion 4 - Repository Patterns)

@@ -3,19 +3,17 @@ using ProjectManager.Business.Dtos;
 using ProjectManager.Business.Factories;
 using ProjectManager.Business.Interfaces;
 using ProjectManager.Business.Models;
-using ProjectManager.Data.Entities;
 using ProjectManager.Data.Interfaces;
 using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 
 namespace ProjectManager.Business.Services;
 
-public class ProjectService(IProjectRepository projectRepository) : IProjectService
+public class ProjectService(IProjectRepository projectRepository,ICustomerRepository customerRepository ) : IProjectService
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
+    private readonly ICustomerRepository _customerRepository = customerRepository;
 
-    public async Task<Project> CreateProjectAsync(ProjectDto dto)
+    public async Task<bool> CreateProjectAsync(ProjectDto dto)
     {
         try
         {
@@ -23,23 +21,28 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
 
             var entity = ProjectFactory.Create(dto);
 
+            if (!await _customerRepository.ExistsAsync(customer => customer.Id == dto.CustomerId))
+                return false;
+
             if (entity == null)
-                return null!;
+                return false;
    
             entity = await _projectRepository.AddAsync(entity);
 
 
             if (entity == null)
-                return null!;
+                return false;
 
-            var project = ProjectFactory.Create(entity);
-            return project!;
+            return true;
+
+
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
-            return null!;
+            return false;
         }
+        
     }
 
     public async Task<IEnumerable<Project?>> GetAllProjectAsync()

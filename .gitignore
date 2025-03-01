@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /ProjectManager.Business/Interfaces/IProjectService.cs
 /ProjectManager.Data/Database/product_database.mdf
+/ProjectManager.Data/Database/project_database.mdf
+/ProjectManager.Data/Database/project_database_log.ldf
