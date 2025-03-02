@@ -42,14 +42,10 @@ public static class TestData
     ];
 
     public static readonly StatusEntity[] StatusEntities =
-   [
+    [
         new StatusEntity {Id = 1,StatusName = "Not Started" },
         new StatusEntity {Id = 2,StatusName = "In Progress" },
         new StatusEntity {Id = 3,StatusName = "Completed" },
     ];
-
-
-
-
     //Data för att populera tabeller i databasen
 }
