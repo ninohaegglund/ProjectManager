@@ -1,7 +1,4 @@
-﻿
-namespace ProjectManager.Data.Entities;
-
-// Task (individual tasks under a project)
+﻿namespace ProjectManager.Data.Entities;
 public class ProjectTaskEntity
 {
     public int Id { get; set; }
